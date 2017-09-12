@@ -1,0 +1,20 @@
+image: golang:1
+
+build:
+  before_script:
+    - mkdir -p /go/src/srv-gitlab.tecnospeed.local/rafael.gumieri/
+    - mv ../act /go/src/srv-gitlab.tecnospeed.local/rafael.gumieri/
+    - cd /go/src/srv-gitlab.tecnospeed.local/rafael.gumieri/act
+    - go get ./...
+    - go get github.com/inconshreveable/mousetrap
+  script:
+    - GOOS=linux GOARCH=amd64 go build -o /builds/rafael.gumieri/act/linux-amd64/act
+    - GOOS=darwin GOARCH=amd64 go build -o /builds/rafael.gumieri/act/osx-amd64/act
+    - GOOS=windows GOARCH=amd64 go build -o /builds/rafael.gumieri/act/win-amd64/act.exe --ldflags="-H windowsgui"
+    - GOOS=windows GOARCH=386 go build -o /builds/rafael.gumieri/act/win-386/act.exe --ldflags="-H windowsgui"
+  artifacts:
+    paths:
+      - /builds/rafael.gumieri/act/linux-amd64/act
+      - /builds/rafael.gumieri/act/osx-amd64/act
+      - /builds/rafael.gumieri/act/win-amd64/act.exe
+      - /builds/rafael.gumieri/act/win-386/act.exe
