@@ -21,6 +21,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os/exec"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -107,9 +109,17 @@ var spentCmd = &cobra.Command{
 func init() {
 	RootCmd.AddCommand(spentCmd)
 
+	issueId := 0
+
+	out, _ := exec.Command("/home/rafael/bin/bin/git", "rev-parse", "--abbrev-ref", "HEAD").Output()
+	r, err := regexp.Compile("[0-9]*")
+	if err == nil {
+		issueId, _ = strconv.Atoi(r.FindString(string(out)))
+	}
+
 	current_date := time.Now().Local().Format("2006-01-02")
 
-	spentCmd.Flags().IntVarP(&timeEntry.IssueId, "issue", "i", 0, "The Issue ID.")
+	spentCmd.Flags().IntVarP(&timeEntry.IssueId, "issue_id", "i", issueId, "The Issue ID.")
 	spentCmd.Flags().StringVarP(&timeEntry.Date, "date", "d", current_date, "The date when the time was spent on.")
 	spentCmd.Flags().IntVar(&timeEntry.ActivityId, "activity_id", 0, "The Activity ID.")
 	spentCmd.Flags().StringVarP(&timeEntry.Comment, "comment", "m", "", "A short description of what was done.")
