@@ -70,7 +70,7 @@ func spentRun(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	request.Header.Add("X-Redmine-API-Key", fmt.Sprintf("%s", viper.Get("redmine.access_key")))
+	request.Header.Add("X-Redmine-API-Key", viper.GetString("redmine.access_key"))
 	request.Header.Add("Content-Type", "application/json")
 
 	client := &http.Client{}
