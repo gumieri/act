@@ -17,6 +17,7 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -79,7 +80,34 @@ func typeOnEditor(editorCommand string) (text string, err error) {
 	return
 }
 
+func getIssueFromGitBranch(gitPath string) (issueId int, err error) {
+	out, _ := exec.Command(gitPath, "rev-parse", "--abbrev-ref", "HEAD").Output()
+
+	regexC, err := regexp.Compile("[0-9]*")
+
+	if err != nil {
+		return
+	}
+
+	issueId, err = strconv.Atoi(regexC.FindString(string(out)))
+
+	return
+}
+
 func spentRun(cmd *cobra.Command, args []string) {
+	// Setting values who require viper loaded
+	if timeEntry.IssueId == 0 {
+		gitPath := viper.Get("git.path")
+		if gitPath != nil {
+			timeEntry.IssueId, _ = getIssueFromGitBranch(gitPath.(string))
+		}
+	}
+
+	// Validating IssueId
+	if timeEntry.IssueId == 0 {
+		log.Fatal(errors.New("issue_id (-i) is missing."))
+	}
+
 	var err error
 
 	editor := viper.Get("editor")
@@ -90,12 +118,23 @@ func spentRun(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	if timeEntry.ActivityId == 0 {
+		timeEntry.ActivityId = viper.GetInt("default.activity_id")
+	}
+
+	// Validating ActivityId
+	if timeEntry.ActivityId == 0 {
+		log.Fatal(errors.New("activity_id is missing."))
+	}
+
+	// Setting the time informed (the first arg)
 	timeEntry.Time, err = strconv.ParseFloat(args[0], 64)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Sending the data to the Redmine
 	payload := new(PayloadStruct)
 	payload.TimeEntry = timeEntry
 
@@ -152,18 +191,10 @@ var spentCmd = &cobra.Command{
 func init() {
 	RootCmd.AddCommand(spentCmd)
 
-	issueId := 0
-
-	out, _ := exec.Command("/home/rafael/bin/bin/git", "rev-parse", "--abbrev-ref", "HEAD").Output()
-	r, err := regexp.Compile("[0-9]*")
-	if err == nil {
-		issueId, _ = strconv.Atoi(r.FindString(string(out)))
-	}
+	spentCmd.Flags().IntVarP(&timeEntry.IssueId, "issue_id", "i", 0, "The Issue ID.")
+	spentCmd.Flags().IntVar(&timeEntry.ActivityId, "activity_id", 0, "The Activity ID.")
 
 	current_date := time.Now().Local().Format("2006-01-02")
-
-	spentCmd.Flags().IntVarP(&timeEntry.IssueId, "issue_id", "i", issueId, "The Issue ID.")
 	spentCmd.Flags().StringVarP(&timeEntry.Date, "date", "d", current_date, "The date when the time was spent on.")
-	spentCmd.Flags().IntVar(&timeEntry.ActivityId, "activity_id", 0, "The Activity ID.")
 	spentCmd.Flags().StringVarP(&timeEntry.Comment, "comment", "m", "", "A short description of what was done.")
 }
