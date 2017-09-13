@@ -18,6 +18,7 @@ default:
 
 git:
   path: /usr/bin/git
+  regex: '[0-9]*'
 
 editor: vim
 ```

@@ -80,10 +80,10 @@ func typeOnEditor(editorCommand string) (text string, err error) {
 	return
 }
 
-func getIssueFromGitBranch(gitPath string) (issueId int, err error) {
+func getIssueFromGitBranch(gitPath string, gitRegex string) (issueId int, err error) {
 	out, _ := exec.Command(gitPath, "rev-parse", "--abbrev-ref", "HEAD").Output()
 
-	regexC, err := regexp.Compile("[0-9]*")
+	regexC, err := regexp.Compile(gitRegex)
 
 	if err != nil {
 		return
@@ -98,8 +98,10 @@ func spentRun(cmd *cobra.Command, args []string) {
 	// Setting values who require viper loaded
 	if timeEntry.IssueId == 0 {
 		gitPath := viper.Get("git.path")
-		if gitPath != nil {
-			timeEntry.IssueId, _ = getIssueFromGitBranch(gitPath.(string))
+		gitRegex := viper.Get("git.regex")
+
+		if gitPath != nil && gitRegex != nil {
+			timeEntry.IssueId, _ = getIssueFromGitBranch(gitPath.(string), gitRegex.(string))
 		}
 	}
 
