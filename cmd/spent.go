@@ -183,9 +183,16 @@ func spentRun(cmd *cobra.Command, args []string) {
 var spentCmd = &cobra.Command{
 	Use:   "spent",
 	Short: "Update an Issue defining the time spent on it.",
-	Long:  ``,
-	Args:  cobra.MinimumNArgs(1),
-	Run:   spentRun,
+	Long: `Update the Issue with the informed hours spent. The hours can be integer (ex: act spent 1) or floating point (ex: act spent 6.66).
+
+The Activity ID can be configured with a default value (default.activity_id).
+
+If the Date (-d) is not informed, it will use the current date.
+
+The Issue ID can be ommited if using a regex to retrieve it from the git branch.
+	`,
+	Args: cobra.MinimumNArgs(1),
+	Run:  spentRun,
 }
 
 func init() {
