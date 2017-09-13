@@ -8,7 +8,7 @@ On Windows it is the `%userprofile%`, on any Unix like it is the `~` path.
 
 An example of configuration:
 
-```
+```yaml
 redmine:
   url: 192.168.3.41
   access_key: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
