@@ -21,6 +21,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -44,8 +45,50 @@ type PayloadStruct struct {
 
 var timeEntry TimeEntryStruct
 
+func typeOnEditor(editorCommand string) (text string, err error) {
+	filePath := fmt.Sprintf("%s/%d-comment", os.TempDir(), timeEntry.IssueId)
+
+	file, err := os.Create(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	file.Close()
+
+	vimcmd := exec.Command(editorCommand, filePath)
+	vimcmd.Stdin = os.Stdin
+	vimcmd.Stdout = os.Stdout
+	vimcmd.Stderr = os.Stderr
+
+	err = vimcmd.Start()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = vimcmd.Wait()
+	if err != nil {
+
+	}
+
+	content, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	text = string(content)
+
+	return
+}
+
 func spentRun(cmd *cobra.Command, args []string) {
 	var err error
+
+	editor := viper.Get("editor")
+	if editor != nil && timeEntry.Comment == "" {
+		timeEntry.Comment, err = typeOnEditor(editor.(string))
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 
 	timeEntry.Time, err = strconv.ParseFloat(args[0], 64)
 
