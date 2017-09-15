@@ -24,7 +24,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"regexp"
 	"strconv"
 	"time"
 
@@ -80,35 +79,8 @@ func typeOnEditor(editorCommand string) (text string, err error) {
 	return
 }
 
-func getIssueFromGitBranch(gitPath string, gitRegex string) (issueId int, err error) {
-	out, _ := exec.Command(gitPath, "rev-parse", "--abbrev-ref", "HEAD").Output()
-
-	regexC, err := regexp.Compile(gitRegex)
-
-	if err != nil {
-		return
-	}
-
-	issueId, err = strconv.Atoi(regexC.FindString(string(out)))
-
-	return
-}
-
 func spentRun(cmd *cobra.Command, args []string) {
-	// Setting values who require viper loaded
-	if timeEntry.IssueId == 0 {
-		gitPath := viper.Get("git.path")
-		gitRegex := viper.Get("git.regex")
-
-		if gitPath != nil && gitRegex != nil {
-			timeEntry.IssueId, _ = getIssueFromGitBranch(gitPath.(string), gitRegex.(string))
-		}
-	}
-
-	// Validating IssueId
-	if timeEntry.IssueId == 0 {
-		log.Fatal(errors.New("issue_id (-i) is missing."))
-	}
+	timeEntry.IssueId = getIssueId()
 
 	var err error
 
@@ -200,7 +172,6 @@ The Issue ID can be ommited if using a regex to retrieve it from the git branch.
 func init() {
 	RootCmd.AddCommand(spentCmd)
 
-	spentCmd.Flags().IntVarP(&timeEntry.IssueId, "issue_id", "i", 0, "The Issue ID.")
 	spentCmd.Flags().IntVar(&timeEntry.ActivityId, "activity_id", 0, "The Activity ID.")
 
 	current_date := time.Now().Local().Format("2006-01-02")

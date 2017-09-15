@@ -1,8 +1,11 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
+	"errors"
+	"log"
+	"os/exec"
+	"regexp"
+	"strconv"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -11,36 +14,59 @@ import (
 
 var cfgFile string
 
+var issueId int
+
+func getIssueId() int {
+	if issueId == 0 {
+		gitPath := viper.Get("git.path")
+		gitRegex := viper.Get("git.regex")
+
+		if gitPath != nil && gitRegex != nil {
+			issueId, _ = getIssueFromGitBranch(gitPath.(string), gitRegex.(string))
+		}
+	}
+
+	if issueId == 0 {
+		log.Fatal(errors.New("issue_id (-i) is missing."))
+	}
+
+	return issueId
+}
+
+func getIssueFromGitBranch(gitPath string, gitRegex string) (issueId int, err error) {
+	out, _ := exec.Command(gitPath, "rev-parse", "--abbrev-ref", "HEAD").Output()
+
+	regexC, err := regexp.Compile(gitRegex)
+
+	if err != nil {
+		return
+	}
+
+	issueId, err = strconv.Atoi(regexC.FindString(string(out)))
+
+	return
+}
+
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "act",
 	Short: "act - Activity Continuous Tracking",
 	Long:  ``,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }
 
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.act.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	// RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	RootCmd.PersistentFlags().IntVarP(&issueId, "issue_id", "i", 0, "The Issue ID.")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -52,8 +78,7 @@ func initConfig() {
 		// Find home directory.
 		home, err := homedir.Dir()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			log.Fatal(err)
 		}
 
 		// Search config in home directory with name ".act" (without extension).
@@ -64,7 +89,5 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
+	_ = viper.ReadInConfig()
 }
