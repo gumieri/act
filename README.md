@@ -1,5 +1,24 @@
 # act - Activity Continuous Tracking
 
+## Usage
+
+### `spent`
+```bash
+act spent 5.67 -i 12345 --activity_id=1 -d '2017-09-15' -m 'Making the world a better place for humans'
+```
+
+* -i --issue_id
+* --activity_id
+* -d --date
+* -m --comment
+
+### `log`
+```
+act log -i 12345
+```
+
+* -i --issue_id
+
 ## Configuration file
 
 The configuration file need to be named `.act.yaml` and placed on the user's home directory.
