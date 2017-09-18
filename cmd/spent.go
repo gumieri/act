@@ -24,7 +24,9 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -45,14 +47,22 @@ type PayloadStruct struct {
 
 var timeEntry TimeEntryStruct
 
-func typeOnEditor(editorCommand string) (text string, err error) {
+func typeOnEditor(editorCommand string, timeEntry TimeEntryStruct) (text string, err error) {
 	filePath := fmt.Sprintf("%s/%d-comment", os.TempDir(), timeEntry.IssueId)
 
-	file, err := os.Create(filePath)
+	tmpFile, err := os.Create(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	file.Close()
+
+	helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueId, timeEntry.Date, timeEntry.Time, timeEntry.ActivityId)
+
+	_, err = tmpFile.WriteString(helperText)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	tmpFile.Close()
 
 	vimcmd := exec.Command(editorCommand, filePath)
 	vimcmd.Stdin = os.Stdin
@@ -74,7 +84,8 @@ func typeOnEditor(editorCommand string) (text string, err error) {
 		log.Fatal(err)
 	}
 
-	text = string(content)
+	re := regexp.MustCompile("(?m)[\r\n]+^#.*$")
+	text = strings.Trim(re.ReplaceAllString(string(content), ""), "\n")
 
 	return
 }
@@ -86,7 +97,7 @@ func spentRun(cmd *cobra.Command, args []string) {
 
 	editor := viper.Get("editor")
 	if editor != nil && timeEntry.Comment == "" {
-		timeEntry.Comment, err = typeOnEditor(editor.(string))
+		timeEntry.Comment, err = typeOnEditor(editor.(string), timeEntry)
 		if err != nil {
 			log.Fatal(err)
 		}
