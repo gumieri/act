@@ -115,7 +115,7 @@ func logRun(cmd *cobra.Command, args []string) {
 // logCmd represents the log command
 var logCmd = &cobra.Command{
 	Use:   "log",
-	Short: "A brief description of your command",
+	Short: "Show the appointments of a specific issue",
 	Long:  ``,
 	Run:   logRun,
 }

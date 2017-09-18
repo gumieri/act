@@ -125,7 +125,7 @@ func spentRun(cmd *cobra.Command, args []string) {
 // spentCmd represents the spent command
 var spentCmd = &cobra.Command{
 	Use:   "spent",
-	Short: "Update an Issue defining the time spent on it.",
+	Short: "Update an Issue defining the time spent on it",
 	Long: `Update the Issue with the informed hours spent. The hours can be integer (ex: act spent 1) or floating point (ex: act spent 6.66).
 
 The Activity ID can be configured with a default value (default.activity_id).
