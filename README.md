@@ -19,6 +19,23 @@ act log -i 12345
 
 * -i --issue_id
 
+### `start`
+```
+act start -i 12345
+```
+
+* -i --issue_id
+
+### `stop`
+```
+act stop
+```
+
+### `push`
+```
+act push
+```
+
 ## Configuration file
 
 The configuration file need to be named `.act.yaml` and placed on the user's home directory.
