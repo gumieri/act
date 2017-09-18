@@ -29,6 +29,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	editor "srv-gitlab.tecnospeed.local/rafael.gumieri/act/lib/editor"
 )
 
 func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
@@ -41,9 +42,14 @@ func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
 	timeEntry.Time = durationHour
 	timeEntry.Comment = activity.Comment
 
-	editor := viper.Get("editor")
-	if editor != nil && timeEntry.Comment == "" {
-		timeEntry.Comment, err = typeOnEditor(editor.(string), timeEntry)
+	editorPath := viper.Get("editor")
+	if editorPath != nil && timeEntry.Comment == "" {
+		fileName := fmt.Sprintf("%d-comment", timeEntry.IssueId)
+
+		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueId, timeEntry.Date, timeEntry.Time, timeEntry.ActivityId)
+
+		timeEntry.Comment, err = editor.Open(editorPath.(string), fileName, helperText)
+
 		if err != nil {
 			return
 		}

@@ -22,15 +22,12 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"os/exec"
-	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	editor "srv-gitlab.tecnospeed.local/rafael.gumieri/act/lib/editor"
 )
 
 type TimeEntryStruct struct {
@@ -47,57 +44,18 @@ type PayloadStruct struct {
 
 var timeEntry TimeEntryStruct
 
-func typeOnEditor(editorCommand string, timeEntry TimeEntryStruct) (text string, err error) {
-	filePath := fmt.Sprintf("%s/%d-comment", os.TempDir(), timeEntry.IssueId)
-
-	tmpFile, err := os.Create(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueId, timeEntry.Date, timeEntry.Time, timeEntry.ActivityId)
-
-	_, err = tmpFile.WriteString(helperText)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	tmpFile.Close()
-
-	vimcmd := exec.Command(editorCommand, filePath)
-	vimcmd.Stdin = os.Stdin
-	vimcmd.Stdout = os.Stdout
-	vimcmd.Stderr = os.Stderr
-
-	err = vimcmd.Start()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = vimcmd.Wait()
-	if err != nil {
-
-	}
-
-	content, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	re := regexp.MustCompile("(?m)[\r\n]+^#.*$")
-	text = strings.Trim(re.ReplaceAllString(string(content), ""), "\n")
-
-	return
-}
-
 func spentRun(cmd *cobra.Command, args []string) {
 	timeEntry.IssueId = getIssueId()
 
 	var err error
 
-	editor := viper.Get("editor")
-	if editor != nil && timeEntry.Comment == "" {
-		timeEntry.Comment, err = typeOnEditor(editor.(string), timeEntry)
+	editorPath := viper.Get("editor")
+	if editorPath != nil && timeEntry.Comment == "" {
+		fileName := fmt.Sprintf("%d-comment", timeEntry.IssueId)
+
+		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueId, timeEntry.Date, timeEntry.Time, timeEntry.ActivityId)
+
+		timeEntry.Comment, err = editor.Open(editorPath.(string), fileName, helperText)
 		if err != nil {
 			log.Fatal(err)
 		}
