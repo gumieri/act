@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
+	"strings"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -31,6 +32,13 @@ func getIssueId() int {
 	}
 
 	return issueId
+}
+
+func getGitRootPath() (path string, err error) {
+	gitPath := viper.Get("git.path")
+	out, err := exec.Command(gitPath.(string), "rev-parse", "--show-toplevel").Output()
+	path = strings.Trim(string(out), "\n")
+	return
 }
 
 func getIssueFromGitBranch(gitPath string, gitRegex string) (issueId int, err error) {
