@@ -13,32 +13,32 @@ act spent 5.67 -i 12345 --activity_id=1 -d '2017-09-15' -m 'Making the world a b
 * -m --comment
 
 ### `log`
-```
+```bash
 act log -i 12345
 ```
 
 * -i --issue_id
 
 ### `start`
-```
+```bash
 act start -i 12345
 ```
 
 * -i --issue_id
 
 ### `stop`
-```
+```bash
 act stop
 ```
 
 ### `push`
-```
+```bash
 act push
 ```
 
 ### `note`
-```
-act note "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius eu purus in aliquam. Ut pellentesque magna purus, eu imperdiet justo convallis ac. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+```bash
+act note -i 12345 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius eu purus in aliquam. Ut pellentesque magna purus, eu imperdiet justo convallis ac. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
 ```
 
 ## Configuration file
