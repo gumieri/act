@@ -25,7 +25,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"srv-gitlab.tecnospeed.local/rafael.gumieri/act/lib/git"
+	"srv-gitlab.tecnospeed.local/labs/act/lib/git"
 )
 
 type ActivityStruct struct {

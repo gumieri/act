@@ -27,7 +27,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"srv-gitlab.tecnospeed.local/rafael.gumieri/act/lib/editor"
+	"srv-gitlab.tecnospeed.local/labs/act/lib/editor"
 )
 
 type TimeEntryStruct struct {
