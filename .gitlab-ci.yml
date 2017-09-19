@@ -1,6 +1,6 @@
 image: golang:1
 
-build:
+binaries:
   before_script:
     - mkdir -p /go/src/srv-gitlab.tecnospeed.local/rafael.gumieri/
     - mv ../act /go/src/srv-gitlab.tecnospeed.local/rafael.gumieri/
