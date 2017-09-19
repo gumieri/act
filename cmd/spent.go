@@ -119,7 +119,6 @@ func spentRun(cmd *cobra.Command, args []string) {
 	}
 
 	log.Printf("Added %.2f hour(s) to the Issue #%d.", timeEntry.Time, timeEntry.IssueId)
-	fmt.Println()
 }
 
 // spentCmd represents the spent command

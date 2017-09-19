@@ -36,6 +36,11 @@ act stop
 act push
 ```
 
+### `note`
+```
+act note "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius eu purus in aliquam. Ut pellentesque magna purus, eu imperdiet justo convallis ac. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+```
+
 ## Configuration file
 
 The configuration file need to be named `.act.yaml` and placed on the user's home directory.
