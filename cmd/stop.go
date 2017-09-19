@@ -23,15 +23,21 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"srv-gitlab.tecnospeed.local/rafael.gumieri/act/lib/git"
 )
 
 func stopRun(cmd *cobra.Command, args []string) {
 	var activities []ActivityStruct
+	var loadPath string
 	var err error
 
-	loadPath, err := getGitRootPath()
+	gitPath := viper.Get("git.path")
+	if gitPath != nil {
+		loadPath, _ = git.TopLevelPath(gitPath.(string))
+	}
 
-	if err != nil {
+	if loadPath == "" {
 		loadPath = filepath.Dir(os.Args[0])
 	}
 

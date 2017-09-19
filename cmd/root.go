@@ -3,14 +3,11 @@ package cmd
 import (
 	"errors"
 	"log"
-	"os/exec"
-	"regexp"
-	"strconv"
-	"strings"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"srv-gitlab.tecnospeed.local/rafael.gumieri/act/lib/git"
 )
 
 var cfgFile string
@@ -23,7 +20,7 @@ func getIssueId() int {
 		gitRegex := viper.Get("git.regex")
 
 		if gitPath != nil && gitRegex != nil {
-			issueId, _ = getIssueFromGitBranch(gitPath.(string), gitRegex.(string))
+			issueId, _ = git.IssueIdFromBranch(gitPath.(string), gitRegex.(string))
 		}
 	}
 
@@ -32,27 +29,6 @@ func getIssueId() int {
 	}
 
 	return issueId
-}
-
-func getGitRootPath() (path string, err error) {
-	gitPath := viper.Get("git.path")
-	out, err := exec.Command(gitPath.(string), "rev-parse", "--show-toplevel").Output()
-	path = strings.Trim(string(out), "\n")
-	return
-}
-
-func getIssueFromGitBranch(gitPath string, gitRegex string) (issueId int, err error) {
-	out, _ := exec.Command(gitPath, "rev-parse", "--abbrev-ref", "HEAD").Output()
-
-	regexC, err := regexp.Compile(gitRegex)
-
-	if err != nil {
-		return
-	}
-
-	issueId, err = strconv.Atoi(regexC.FindString(string(out)))
-
-	return
 }
 
 // RootCmd represents the base command when called without any subcommands
