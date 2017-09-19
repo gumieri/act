@@ -103,8 +103,7 @@ var noteCmd = &cobra.Command{
 
 The Issue ID can be ommited if using a regex to retrieve it from the git branch.
 	`,
-	Args: cobra.MinimumNArgs(1),
-	Run:  noteRun,
+	Run: noteRun,
 }
 
 func init() {
