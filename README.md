@@ -4,7 +4,7 @@
 
 ### `spent`
 ```bash
-act spent 5.67 -i 12345 --activity_id=1 -d '2017-09-15' -m 'Making the world a better place for humans'
+act spent 5.67 -i 12345 --activity_id=1 -d 2017-09-15 -m 'Making the world a better place for humans'
 ```
 Parameters/Arguments:
 1. time -- ex: 1.5 (for 1 hour 30 minutes)
@@ -43,7 +43,11 @@ act push
 
 ### `note`
 ```bash
-act note -i 12345 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius eu purus in aliquam. Ut pellentesque magna purus, eu imperdiet justo convallis ac. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+act note -i 12345 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius eu purus in aliquam. Ut pellentesque magna purus, eu imperdiet justo convallis ac."
+```
+
+```bash
+act note -i 12345 -t mr
 ```
 
 Parameters/Arguments:
@@ -51,6 +55,7 @@ Parameters/Arguments:
 
 Options/Flags:
 * -i --issue_id -- If not informed it will try retrieve it from the git branch name using the regex config
+* -t --template -- The name of a template file to be loaded to be edited. These template files need to be stored in `templates` inside `.act` in the home directory (`~/.act/templates/text_file`)
 
 ## Configuration file
 
