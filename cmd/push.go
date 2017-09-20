@@ -37,17 +37,17 @@ func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
 	duration := activity.StoppedAt.Sub(activity.StartedAt)
 	durationHour := float64(duration) / float64(time.Hour)
 
-	timeEntry.IssueId = activity.IssueId
-	timeEntry.ActivityId = activity.ActivityId
+	timeEntry.IssueID = activity.IssueID
+	timeEntry.ActivityID = activity.ActivityID
 	timeEntry.Date = activity.StartedAt.Format("2006-01-02")
 	timeEntry.Time = durationHour
 	timeEntry.Comment = activity.Comment
 
 	editorPath := viper.Get("editor")
 	if editorPath != nil && timeEntry.Comment == "" {
-		fileName := fmt.Sprintf("%d-comment", timeEntry.IssueId)
+		fileName := fmt.Sprintf("%d-comment", timeEntry.IssueID)
 
-		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueId, timeEntry.Date, timeEntry.Time, timeEntry.ActivityId)
+		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueID, timeEntry.Date, timeEntry.Time, timeEntry.ActivityID)
 
 		timeEntry.Comment, err = editor.Open(editorPath.(string), fileName, helperText, true)
 
@@ -56,19 +56,19 @@ func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
 		}
 	}
 
-	if timeEntry.ActivityId == 0 {
-		timeEntry.ActivityId = viper.GetInt("default.activity_id")
+	if timeEntry.ActivityID == 0 {
+		timeEntry.ActivityID = viper.GetInt("default.activity_id")
 	}
 
-	// Validating ActivityId
-	if timeEntry.ActivityId == 0 {
-		err = errors.New("activity_id is missing.")
+	// Validating ActivityID
+	if timeEntry.ActivityID == 0 {
+		err = errors.New("activity_id is missing")
 		return
 	}
 
-	// Validating ActivityId
+	// Validating ActivityID
 	if strings.Trim(timeEntry.Comment, "\n ") == "" {
-		err = errors.New("You must inform a comment/description to the activity.")
+		err = errors.New("You must inform a comment/description to the activity")
 		return
 	}
 
@@ -104,7 +104,7 @@ func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusCreated {
-		err = errors.New(fmt.Sprintf("%d", response.StatusCode))
+		err = fmt.Errorf("%d", response.StatusCode)
 	}
 
 	return
@@ -151,7 +151,7 @@ func pushRun(cmd *cobra.Command, args []string) {
 			log.Fatal(err)
 		}
 
-		log.Printf("Added %.2f hour(s) to the Issue #%d.", timeEntry.Time, timeEntry.IssueId)
+		log.Printf("Added %.2f hour(s) to the Issue #%d.", timeEntry.Time, timeEntry.IssueID)
 	}
 }
 

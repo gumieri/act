@@ -50,16 +50,16 @@ func stopRun(cmd *cobra.Command, args []string) {
 	}
 
 	if len(activities) == 0 {
-		log.Fatal(errors.New("There's no activity started."))
+		log.Fatal(errors.New("there's no activity started"))
 	}
 
 	lastActivity := activities[len(activities)-1]
 	if lastActivity == (ActivityStruct{}) {
-		log.Fatal(errors.New("There's no activity started."))
+		log.Fatal(errors.New("there's no activity started"))
 	}
 
 	if lastActivity.StoppedAt != (time.Time{}) {
-		log.Fatal(errors.New("There's no activity started."))
+		log.Fatal(errors.New("there's no activity started"))
 	}
 
 	lastActivity.StoppedAt = time.Now()
@@ -74,7 +74,7 @@ func stopRun(cmd *cobra.Command, args []string) {
 
 	duration := lastActivity.StoppedAt.Sub(lastActivity.StartedAt)
 	durationHour := float64(duration) / float64(time.Hour)
-	log.Printf("Activity %d stopped. Time elapsed %.2f (%s)\n", lastActivity.IssueId, durationHour, duration)
+	log.Printf("Activity %d stopped. Time elapsed %.2f (%s)\n", lastActivity.IssueID, durationHour, duration)
 }
 
 // stopCmd represents the stop command

@@ -29,14 +29,14 @@ import (
 )
 
 type ActivityStruct struct {
-	IssueId    int
-	ActivityId int
+	IssueID    int
+	ActivityID int
 	StartedAt  time.Time
 	StoppedAt  time.Time
 	Comment    string
 }
 
-// Encode via Gob to file
+// Save encode via Gob to file
 func Save(path string, object interface{}) (err error) {
 	file, err := os.Create(path)
 
@@ -50,7 +50,7 @@ func Save(path string, object interface{}) (err error) {
 	return
 }
 
-// Decode Gob file
+// Load decode Gob file
 func Load(path string, object interface{}) (err error) {
 	file, err := os.Open(path)
 
@@ -86,15 +86,15 @@ func startRun(cmd *cobra.Command, args []string) {
 		lastActivity := activities[len(activities)-1]
 		if lastActivity != (ActivityStruct{}) {
 			if lastActivity.StoppedAt == (time.Time{}) {
-				log.Fatal(errors.New("There's an activity running."))
+				log.Fatal(errors.New("there's an activity running"))
 			}
 		}
 	}
 
-	issueId = getIssueId()
+	issueID = getIssueID()
 
 	activity := new(ActivityStruct)
-	activity.IssueId = issueId
+	activity.IssueID = issueID
 	activity.StartedAt = time.Now()
 
 	activities = append(activities, *activity)
@@ -104,7 +104,7 @@ func startRun(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	log.Printf("Activity %d started.\n", issueId)
+	log.Printf("Activity %d started.\n", issueID)
 }
 
 // startCmd represents the start command

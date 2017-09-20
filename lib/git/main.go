@@ -13,7 +13,7 @@ func TopLevelPath(gitPath string) (path string, err error) {
 	return
 }
 
-func IssueIdFromBranch(gitPath string, gitRegex string) (issueId int, err error) {
+func IssueIDFromBranch(gitPath string, gitRegex string) (issueID int, err error) {
 	out, _ := exec.Command(gitPath, "rev-parse", "--abbrev-ref", "HEAD").Output()
 
 	regexC, err := regexp.Compile(gitRegex)
@@ -22,7 +22,7 @@ func IssueIdFromBranch(gitPath string, gitRegex string) (issueId int, err error)
 		return
 	}
 
-	issueId, err = strconv.Atoi(regexC.FindString(string(out)))
+	issueID, err = strconv.Atoi(regexC.FindString(string(out)))
 
 	return
 }

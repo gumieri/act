@@ -12,23 +12,23 @@ import (
 
 var homePath string
 var cfgFile string
-var issueId int
+var issueID int
 
-func getIssueId() int {
-	if issueId == 0 {
+func getIssueID() int {
+	if issueID == 0 {
 		gitPath := viper.Get("git.path")
 		gitRegex := viper.Get("git.regex")
 
 		if gitPath != nil && gitRegex != nil {
-			issueId, _ = git.IssueIdFromBranch(gitPath.(string), gitRegex.(string))
+			issueID, _ = git.IssueIDFromBranch(gitPath.(string), gitRegex.(string))
 		}
 	}
 
-	if issueId == 0 {
-		log.Fatal(errors.New("issue_id (-i) is missing."))
+	if issueID == 0 {
+		log.Fatal(errors.New("issue_id (-i) is missing"))
 	}
 
-	return issueId
+	return issueID
 }
 
 // RootCmd represents the base command when called without any subcommands
@@ -50,7 +50,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.act.yaml)")
-	RootCmd.PersistentFlags().IntVarP(&issueId, "issue_id", "i", 0, "The Issue ID.")
+	RootCmd.PersistentFlags().IntVarP(&issueID, "issue_id", "i", 0, "The Issue ID.")
 }
 
 // initConfig reads in config file and ENV variables if set.

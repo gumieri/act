@@ -48,14 +48,14 @@ func noteRun(cmd *cobra.Command, args []string) {
 	var note string
 	var err error
 
-	issueId := getIssueId()
+	issueID := getIssueID()
 	if len(note) > 0 {
 		note = args[0]
 	}
 
 	editorPath := viper.Get("editor")
 	if editorPath != nil && note == "" {
-		fileName := fmt.Sprintf("%d-note", issueId)
+		fileName := fmt.Sprintf("%d-note", issueID)
 		template := loadTemplate()
 
 		note, err = editor.Open(editorPath.(string), fileName, template, false)
@@ -78,7 +78,7 @@ func noteRun(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	url := fmt.Sprintf("http://%s/issues/%d.json", viper.Get("redmine.url"), issueId)
+	url := fmt.Sprintf("http://%s/issues/%d.json", viper.Get("redmine.url"), issueID)
 	payloadMarshal := bytes.NewBuffer(marshal)
 	request, err := http.NewRequest(http.MethodPut, url, payloadMarshal)
 
@@ -109,7 +109,7 @@ func noteRun(cmd *cobra.Command, args []string) {
 		log.Fatal(response.Status, "\n", string(bodyBytes))
 	}
 
-	log.Printf("Added the note to the Issue #%d.", issueId)
+	log.Printf("Added the note to the Issue #%d.", issueID)
 }
 
 // noteCmd represents the note command

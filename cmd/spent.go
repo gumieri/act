@@ -31,10 +31,10 @@ import (
 )
 
 type TimeEntryStruct struct {
-	IssueId    int     `json:"issue_id"`
+	IssueID    int     `json:"issue_id"`
 	Date       string  `json:"spent_on"`
 	Time       float64 `json:"hours"`
-	ActivityId int     `json:"activity_id"`
+	ActivityID int     `json:"activity_id"`
 	Comment    string  `json:"comments"`
 }
 
@@ -45,15 +45,15 @@ type PayloadStruct struct {
 var timeEntry TimeEntryStruct
 
 func spentRun(cmd *cobra.Command, args []string) {
-	timeEntry.IssueId = getIssueId()
+	timeEntry.IssueID = getIssueID()
 
 	var err error
 
 	editorPath := viper.Get("editor")
 	if editorPath != nil && timeEntry.Comment == "" {
-		fileName := fmt.Sprintf("%d-comment", timeEntry.IssueId)
+		fileName := fmt.Sprintf("%d-comment", timeEntry.IssueID)
 
-		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueId, timeEntry.Date, timeEntry.Time, timeEntry.ActivityId)
+		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueID, timeEntry.Date, timeEntry.Time, timeEntry.ActivityID)
 
 		timeEntry.Comment, err = editor.Open(editorPath.(string), fileName, helperText, true)
 		if err != nil {
@@ -61,13 +61,13 @@ func spentRun(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	if timeEntry.ActivityId == 0 {
-		timeEntry.ActivityId = viper.GetInt("default.activity_id")
+	if timeEntry.ActivityID == 0 {
+		timeEntry.ActivityID = viper.GetInt("default.activity_id")
 	}
 
-	// Validating ActivityId
-	if timeEntry.ActivityId == 0 {
-		log.Fatal(errors.New("activity_id is missing."))
+	// Validating ActivityID
+	if timeEntry.ActivityID == 0 {
+		log.Fatal(errors.New("activity_id is missing"))
 	}
 
 	// Setting the time informed (the first arg)
@@ -118,7 +118,7 @@ func spentRun(cmd *cobra.Command, args []string) {
 		log.Fatal(response.Status, "\n", string(bodyBytes))
 	}
 
-	log.Printf("Added %.2f hour(s) to the Issue #%d.", timeEntry.Time, timeEntry.IssueId)
+	log.Printf("Added %.2f hour(s) to the Issue #%d.", timeEntry.Time, timeEntry.IssueID)
 }
 
 // spentCmd represents the spent command
@@ -140,9 +140,9 @@ The Issue ID can be ommited if using a regex to retrieve it from the git branch.
 func init() {
 	RootCmd.AddCommand(spentCmd)
 
-	spentCmd.Flags().IntVar(&timeEntry.ActivityId, "activity_id", 0, "The Activity ID.")
+	spentCmd.Flags().IntVar(&timeEntry.ActivityID, "activity_id", 0, "The Activity ID.")
 
-	current_date := time.Now().Local().Format("2006-01-02")
-	spentCmd.Flags().StringVarP(&timeEntry.Date, "date", "d", current_date, "The date when the time was spent on.")
+	currentDate := time.Now().Local().Format("2006-01-02")
+	spentCmd.Flags().StringVarP(&timeEntry.Date, "date", "d", currentDate, "The date when the time was spent on.")
 	spentCmd.Flags().StringVarP(&timeEntry.Comment, "comment", "m", "", "A short description of what was done.")
 }

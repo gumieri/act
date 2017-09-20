@@ -31,7 +31,7 @@ type RedmineGetTimeEntriesStruct struct {
 }
 
 type RedmineTimeEntryStruct struct {
-	Id        int                   `json:"id"`
+	ID        int                   `json:"id"`
 	Time      float64               `json:"hours"`
 	Comment   string                `json:"comments"`
 	Date      string                `json:"spent_on"`
@@ -44,28 +44,28 @@ type RedmineTimeEntryStruct struct {
 }
 
 type RedmineProjectSctruct struct {
-	Id   int    `json:"id"`
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 type RedmineIssueStruct struct {
-	Id int `json:"id"`
+	ID int `json:"id"`
 }
 
 type RedmineUserStruct struct {
-	Id   int    `json:"id"`
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 type RedmineActivityStruct struct {
-	Id   int    `json:"id"`
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 func logRun(cmd *cobra.Command, args []string) {
-	issueId = getIssueId()
+	issueID = getIssueID()
 
-	url := fmt.Sprintf("http://%s/issues/%d/time_entries.json", viper.Get("redmine.url"), issueId)
+	url := fmt.Sprintf("http://%s/issues/%d/time_entries.json", viper.Get("redmine.url"), issueID)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 
 	if err != nil {
@@ -102,7 +102,7 @@ func logRun(cmd *cobra.Command, args []string) {
 		fmt.Fprint(w, "\t")
 		fmt.Fprintf(w, "%s", timeEntry.User.Name)
 		fmt.Fprint(w, "\t")
-		fmt.Fprintf(w, "%d", timeEntry.Activity.Id)
+		fmt.Fprintf(w, "%d", timeEntry.Activity.ID)
 		fmt.Fprint(w, "\t")
 		fmt.Fprintf(w, "%s", timeEntry.Activity.Name)
 		fmt.Fprintf(w, "%q", timeEntry.Comment)
