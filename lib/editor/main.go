@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func Open(editorCommand string, fileName, helperText string) (text string, err error) {
+func Open(editorCommand string, fileName, helperText string, removeSharps bool) (text string, err error) {
 	filePath := fmt.Sprintf("%s/%s", os.TempDir(), fileName)
 
 	tmpFile, err := os.Create(filePath)
@@ -44,8 +44,10 @@ func Open(editorCommand string, fileName, helperText string) (text string, err e
 		return
 	}
 
-	re := regexp.MustCompile("(?m)[\r\n]+^#.*$")
-	text = strings.Trim(re.ReplaceAllString(string(content), ""), "\n")
+	if removeSharps {
+		re := regexp.MustCompile("(?m)[\r\n]+^#.*$")
+		text = strings.Trim(re.ReplaceAllString(string(content), ""), "\n")
+	}
 
 	return
 }

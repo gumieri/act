@@ -17,15 +17,19 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"path"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"srv-gitlab.tecnospeed.local/labs/act/lib/editor"
 )
+
+var templateName string
 
 type IssuePayloadStruct struct {
 	Issue IssueStruct `json:"issue"`
@@ -35,20 +39,33 @@ type IssueStruct struct {
 	Note string `json:"notes"`
 }
 
+func loadTemplate() string {
+	content, _ := ioutil.ReadFile(path.Join(homePath, ".act", "templates", templateName))
+	return string(content)
+}
+
 func noteRun(cmd *cobra.Command, args []string) {
+	var note string
 	var err error
 
 	issueId := getIssueId()
-	note := args[0]
+	if len(note) > 0 {
+		note = args[0]
+	}
 
 	editorPath := viper.Get("editor")
 	if editorPath != nil && note == "" {
 		fileName := fmt.Sprintf("%d-note", issueId)
+		template := loadTemplate()
 
-		note, err = editor.Open(editorPath.(string), fileName, "")
+		note, err = editor.Open(editorPath.(string), fileName, template, false)
 		if err != nil {
 			log.Fatal(err)
 		}
+	}
+
+	if note == "" {
+		log.Fatal(errors.New("Empty note"))
 	}
 
 	// Sending the data to the Redmine
@@ -101,6 +118,8 @@ var noteCmd = &cobra.Command{
 	Short: "Add a note to the Issue",
 	Long: `The informed argument is sent as note to the Issue.
 
+It can load a template (-t) file saved on ~/.act/templates/.
+
 The Issue ID can be ommited if using a regex to retrieve it from the git branch.
 	`,
 	Run: noteRun,
@@ -108,4 +127,6 @@ The Issue ID can be ommited if using a regex to retrieve it from the git branch.
 
 func init() {
 	RootCmd.AddCommand(noteCmd)
+
+	noteCmd.Flags().StringVarP(&templateName, "template", "t", "", "the template name on ~/.act/templates/")
 }

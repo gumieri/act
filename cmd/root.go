@@ -10,8 +10,8 @@ import (
 	"srv-gitlab.tecnospeed.local/labs/act/lib/git"
 )
 
+var homePath string
 var cfgFile string
-
 var issueId int
 
 func getIssueId() int {
@@ -55,18 +55,20 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	var err error
+
+	// Find home directory.
+	homePath, err = homedir.Dir()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			log.Fatal(err)
-		}
-
 		// Search config in home directory with name ".act" (without extension).
-		viper.AddConfigPath(home)
+		viper.AddConfigPath(homePath)
 		viper.SetConfigName(".act")
 	}
 

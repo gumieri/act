@@ -49,7 +49,7 @@ func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
 
 		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueId, timeEntry.Date, timeEntry.Time, timeEntry.ActivityId)
 
-		timeEntry.Comment, err = editor.Open(editorPath.(string), fileName, helperText)
+		timeEntry.Comment, err = editor.Open(editorPath.(string), fileName, helperText, true)
 
 		if err != nil {
 			return
