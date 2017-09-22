@@ -1,5 +1,28 @@
 # act - Activity Continuous Tracking
 
+## Configuration file
+
+The configuration file need to be named `.act.yaml` and placed on the user's home directory.
+
+On Windows it is the `%userprofile%`, on any Unix like it is the `~` path.
+
+An example of configuration:
+
+```yaml
+redmine:
+  url: 192.168.3.41
+  access_key: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+default:
+  activity_id: 24
+
+git:
+  path: /usr/bin/git
+  regex: '[0-9]*'
+
+editor: vim
+```
+
 ## Usage
 
 ### `spent`
@@ -64,26 +87,3 @@ Parameters/Arguments:
 Options/Flags:
 * -i --issue_id -- If not informed it will try retrieve it from the git branch name using the regex config
 * -t --template -- The name of a template file to be loaded to be edited. These template files need to be stored in `templates` inside `.act` in the home directory (`~/.act/templates/text_file`)
-
-## Configuration file
-
-The configuration file need to be named `.act.yaml` and placed on the user's home directory.
-
-On Windows it is the `%userprofile%`, on any Unix like it is the `~` path.
-
-An example of configuration:
-
-```yaml
-redmine:
-  url: 192.168.3.41
-  access_key: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-
-default:
-  activity_id: 24
-
-git:
-  path: /usr/bin/git
-  regex: '[0-9]*'
-
-editor: vim
-```
