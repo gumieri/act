@@ -1,5 +1,7 @@
 # act - Activity Continuous Tracking
 
+A tool for timekeeping and tracking. For now only for Redmine.
+
 ## Configuration file
 
 The configuration file need to be named `.act.yaml` and placed on the user's home directory.
