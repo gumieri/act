@@ -23,6 +23,14 @@ act log -i 12345
 Options/Flags:
 * -i --issue_id
 
+### `link`
+```bash
+act link -i 12345
+```
+
+Options/Flags:
+* -i --issue_id
+
 ### `start`
 ```bash
 act start -i 12345
