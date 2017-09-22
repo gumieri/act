@@ -45,9 +45,16 @@ type PayloadStruct struct {
 var timeEntry TimeEntryStruct
 
 func spentRun(cmd *cobra.Command, args []string) {
+	var err error
+
 	timeEntry.IssueID = getIssueID()
 
-	var err error
+	// Setting the time informed (the first arg)
+	timeEntry.Time, err = strconv.ParseFloat(args[0], 64)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	editorPath := viper.Get("editor")
 	if editorPath != nil && timeEntry.Comment == "" {
@@ -61,6 +68,10 @@ func spentRun(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	if timeEntry.Comment == "" {
+		log.Fatal(errors.New("Empty note"))
+	}
+
 	if timeEntry.ActivityID == 0 {
 		timeEntry.ActivityID = viper.GetInt("default.activity_id")
 	}
@@ -68,13 +79,6 @@ func spentRun(cmd *cobra.Command, args []string) {
 	// Validating ActivityID
 	if timeEntry.ActivityID == 0 {
 		log.Fatal(errors.New("activity_id is missing"))
-	}
-
-	// Setting the time informed (the first arg)
-	timeEntry.Time, err = strconv.ParseFloat(args[0], 64)
-
-	if err != nil {
-		log.Fatal(err)
 	}
 
 	// Sending the data to the Redmine
