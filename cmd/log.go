@@ -105,6 +105,7 @@ func logRun(cmd *cobra.Command, args []string) {
 		fmt.Fprintf(w, "%d", timeEntry.Activity.ID)
 		fmt.Fprint(w, "\t")
 		fmt.Fprintf(w, "%s", timeEntry.Activity.Name)
+		fmt.Fprint(w, "\t")
 		fmt.Fprintf(w, "%q", timeEntry.Comment)
 		fmt.Fprintln(w)
 	}
