@@ -22,6 +22,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -30,6 +31,7 @@ import (
 	"srv-gitlab.tecnospeed.local/labs/act/lib/editor"
 )
 
+// TimeEntryStruct is expected format of the Redmine API
 type TimeEntryStruct struct {
 	IssueID    int     `json:"issue_id"`
 	Date       string  `json:"spent_on"`
@@ -38,11 +40,103 @@ type TimeEntryStruct struct {
 	Comment    string  `json:"comments"`
 }
 
+// PayloadStruct is the envelope to the time_entry expected by the Redmine API
 type PayloadStruct struct {
 	TimeEntry TimeEntryStruct `json:"time_entry"`
 }
 
 var timeEntry TimeEntryStruct
+
+func parseMonthDay(input string) (output string, err error) {
+	regexDayAndMonth := regexp.MustCompile(`^(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$`)
+	dayAndMonth := regexDayAndMonth.FindStringSubmatch(input)
+
+	if len(dayAndMonth) == 0 {
+		return
+	}
+
+	day, err := strconv.Atoi(dayAndMonth[2])
+
+	if err != nil {
+		return
+	}
+
+	month, err := strconv.Atoi(dayAndMonth[1])
+
+	if err != nil {
+		return
+	}
+
+	timeNow := time.Now().Local()
+	monthDayDate := time.Date(timeNow.Year(), time.Month(month), day, 0, 0, 0, 0, timeNow.Location())
+	output = monthDayDate.Format("2006-01-02")
+	return
+}
+
+func parseRetroactiveDate(input string) (output string, err error) {
+	retroactive, err := regexp.MatchString("^-[0-9]*$", input)
+
+	if err != nil || !retroactive {
+		return
+	}
+
+	daysToBack, err := strconv.Atoi(input)
+
+	if err != nil {
+		return
+	}
+
+	timeNow := time.Now().Local()
+	output = timeNow.AddDate(0, 0, daysToBack).Format("2006-01-02")
+	return
+
+}
+
+func parseDate(input string) (output string, err error) {
+	complete, err := regexp.MatchString(`^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$`, input)
+
+	if err != nil {
+		return
+	}
+
+	if complete {
+		output = input
+		return
+	}
+
+	monthDay, err := parseMonthDay(input)
+
+	if err != nil {
+		return
+	}
+
+	if monthDay != "" {
+		output = monthDay
+		return
+	}
+
+	retroactiveDate, err := parseRetroactiveDate(input)
+
+	if err != nil {
+		return
+	}
+
+	if retroactiveDate != "" {
+		output = retroactiveDate
+		return
+	}
+
+	// look for a number (only the day). ex: 2
+	day, err := strconv.Atoi(input)
+
+	if err != nil {
+		return
+	}
+
+	timeNow := time.Now().Local()
+	output = time.Date(timeNow.Year(), timeNow.Month(), day, 0, 0, 0, 0, timeNow.Location()).Format("2006-01-02")
+	return
+}
 
 func spentRun(cmd *cobra.Command, args []string) {
 	var err error
@@ -51,6 +145,12 @@ func spentRun(cmd *cobra.Command, args []string) {
 
 	// Setting the time informed (the first arg)
 	timeEntry.Time, err = strconv.ParseFloat(args[0], 64)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	timeEntry.Date, err = parseDate(timeEntry.Date)
 
 	if err != nil {
 		log.Fatal(err)
@@ -133,7 +233,12 @@ var spentCmd = &cobra.Command{
 
 The Activity ID can be configured with a default value (default.activity_id).
 
-If the Date (-d) is not informed, it will use the current date.
+The Date can be informed as:
+-d 2017-09-22 -- Complete
+-d      09-22 -- Only the month and day. The year will be the current one.
+-d         22 -- Only the day. The year and month will be the current ones.
+-d         -1 -- Informing how many days back from the current date.
+And if not informed, it will use the current date.
 
 The Issue ID can be ommited if using a regex to retrieve it from the git branch.
 	`,
