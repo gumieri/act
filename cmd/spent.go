@@ -240,7 +240,7 @@ The Date can be informed as:
 -d         -1 -- Informing how many days back from the current date.
 And if not informed, it will use the current date.
 
-The Issue ID can be ommited if using a regex to retrieve it from the git branch.
+The Issue ID can be omitted if using a regex to retrieve it from the git branch.
 	`,
 	Args: cobra.MinimumNArgs(1),
 	Run:  spentRun,

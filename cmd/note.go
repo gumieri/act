@@ -120,7 +120,7 @@ var noteCmd = &cobra.Command{
 
 It can load a template (-t) file saved on ~/.act/templates/.
 
-The Issue ID can be ommited if using a regex to retrieve it from the git branch.
+The Issue ID can be omitted if using a regex to retrieve it from the git branch.
 	`,
 	Run: noteRun,
 }
