@@ -40,7 +40,9 @@ editor: vim
 act spent 5.67 -i 12345 -a dev -d 2017-09-15 -m 'Making the world a better place for humans'
 ```
 Parameters/Arguments:
-1. time -- ex: 1.5 (for 1 hour 30 minutes)
+1. time -- it can be informed as:
+    * `1.5` -- (1 hour 30 minutes) As a fraction of hour
+    * `1:45` -- (1 hour 45 minutes) As time with hour and minute
 
 Options/Flags:
 * -i --issue_id -- If not informed it will try retrieve it from the git branch name using the regex config
