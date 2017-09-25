@@ -1,0 +1,24 @@
+language: go
+go:
+- 1.8.x
+install:
+- go get ./...
+- go get github.com/inconshreveable/mousetrap
+script:
+- GOOS=linux GOARCH=amd64 go build -o release/act-linux-amd64
+- GOOS=darwin GOARCH=amd64 go build -o release/act-osx-amd64
+- GOOS=windows GOARCH=amd64 go build -o release/act-win-amd64.exe --ldflags="-H windowsgui"
+- GOOS=windows GOARCH=386 go build -o release/act-win-386.exe --ldflags="-H windowsgui"
+deploy:
+  provider: releases
+  api_key:
+    secure: VIHMpEu/Rc4t88HvZzzGV+TkDZmHk/mO8+CNYzr6O6/2jNRZSkRUV1s1CuSSEtxaUR4fWmq9bV1Dyzevtvg7GdwhzILzF1Vu9Vxn60SlG6Fxfgv0cbDf6+6CzzhwPANlNhXdah1edwpF4jQoF59J05Y5oR0VU7M3aWTKFLF71gIVAc/LAhGRTTCIjRBkYFhDr7XnQDy7kLL3lTZkvgi7r3tMPL8MIkvwxHcHu2P6EwOLYc205AjO9wzANEYj4L0X7w9vQA2XFtmvMEbUSiClD19nqsfExzh7JqMQEAaGOKmJc+MZYAboCBVtsvQsBaCgrdwS6TrPOqxUcGKF+cK9D5XdvskVGaMkN9IIeBYyaCFqLsNDVT8aKHJU4edeg75JSJEbQRnluVlX4aiHP03CK6qECP9aLe33B0FO8w/WrXEONYzUWFuSBtbBmhkQsXlNKCWEYcEhQUYy8e78rEMc6FLLn0gwHXozUFSAlnDgaSjy5QRygNg55v2tp4FsoRs9z79AF1gu9BnEU5yrNiLjAtumHYPf4g4LDDXfe1u96aUqlpnXQsqaBk+p39CHprsSQm/GuExdoksShg2kg1wSV1kAo7sMmDSneTNl7dSzcU6d9rvpgofQOJoEkpM89sxfQls9GMsDqz5OP5eh3f2IUJ3AQSSjiZldp2l+yZ05Zg0=
+  skip_cleanup: true
+  file:
+    - release/act-linux-amd64
+    - release/act-osx-amd64
+    - release/act-win-amd64.exe
+    - release/act-win-386.exe
+  on:
+    repo: gumieri/act
+    tags: true
