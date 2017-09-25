@@ -4,10 +4,10 @@ import (
 	"errors"
 	"log"
 
+	"github.com/gumieri/act/lib/git"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"srv-gitlab.tecnospeed.local/labs/act/lib/git"
 )
 
 var homePath string

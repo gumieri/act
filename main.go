@@ -14,7 +14,7 @@
 
 package main
 
-import "srv-gitlab.tecnospeed.local/labs/act/cmd"
+import "github.com/gumieri/act/cmd"
 
 func main() {
 	cmd.Execute()

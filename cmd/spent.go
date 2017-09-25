@@ -26,9 +26,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gumieri/act/lib/editor"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"srv-gitlab.tecnospeed.local/labs/act/lib/editor"
 )
 
 // TimeEntryStruct is expected format of the Redmine API

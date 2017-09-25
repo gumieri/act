@@ -27,10 +27,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gumieri/act/lib/editor"
+	"github.com/gumieri/act/lib/git"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"srv-gitlab.tecnospeed.local/labs/act/lib/editor"
-	"srv-gitlab.tecnospeed.local/labs/act/lib/git"
 )
 
 func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {

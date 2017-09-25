@@ -24,9 +24,9 @@ import (
 	"net/http"
 	"path"
 
+	"github.com/gumieri/act/lib/editor"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"srv-gitlab.tecnospeed.local/labs/act/lib/editor"
 )
 
 var templateName string
