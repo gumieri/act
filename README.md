@@ -22,6 +22,10 @@ redmine:
 default:
   activity_id: 24
 
+activities:
+  dev: 24
+  cr: 25
+
 git:
   path: /usr/bin/git
   regex: '[0-9]*'
@@ -40,15 +44,15 @@ Parameters/Arguments:
 
 Options/Flags:
 * -i --issue_id -- If not informed it will try retrieve it from the git branch name using the regex config
-* --activity_id -- Can be defined a default value at the configuration file
-* -d --date -- The default value is the current date. It can be informed as:
+* -d --date -- It can be informed as:
     * `2017-09-22` -- Complete date
     * `09-22` -- Only the month and day. The year will be the current one
     * `22` -- Only the day. The year and month will be the current ones
     * `-1` -- Informing how many days back from the current date
     * And if not informed, it will use the current date
-
 * -m --comment -- If not informed it will try to use the defined text editor
+* -a --activity -- The name of an activity ID defined on the configuration file under activities
+* --activity_id -- The activity ID. It Can be defined a default value to be used at the configuration file
 
 ### `log`
 ```bash

@@ -46,6 +46,7 @@ type PayloadStruct struct {
 }
 
 var timeEntry TimeEntryStruct
+var activityAlias string
 
 func parseMonthDay(input string) (output string, err error) {
 	regexDayAndMonth := regexp.MustCompile(`^(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$`)
@@ -172,6 +173,10 @@ func spentRun(cmd *cobra.Command, args []string) {
 		log.Fatal(errors.New("Empty note"))
 	}
 
+	if activityAlias != "" {
+		timeEntry.ActivityID = viper.GetInt(fmt.Sprintf("activities.%s", activityAlias))
+	}
+
 	if timeEntry.ActivityID == 0 {
 		timeEntry.ActivityID = viper.GetInt("default.activity_id")
 	}
@@ -249,7 +254,8 @@ The Issue ID can be omitted if using a regex to retrieve it from the git branch.
 func init() {
 	RootCmd.AddCommand(spentCmd)
 
-	spentCmd.Flags().IntVar(&timeEntry.ActivityID, "activity_id", 0, "The Activity ID.")
+	spentCmd.Flags().IntVar(&timeEntry.ActivityID, "activity_id", 0, "The activity ID.")
+	spentCmd.Flags().StringVarP(&activityAlias, "activity", "a", "", "The activity alias (alternative to activity_id).")
 
 	currentDate := time.Now().Local().Format("2006-01-02")
 	spentCmd.Flags().StringVarP(&timeEntry.Date, "date", "d", currentDate, "The date when the time was spent on.")
