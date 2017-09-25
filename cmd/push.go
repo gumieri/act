@@ -24,6 +24,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -40,14 +41,14 @@ func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
 	timeEntry.IssueID = activity.IssueID
 	timeEntry.ActivityID = activity.ActivityID
 	timeEntry.Date = activity.StartedAt.Format("2006-01-02")
-	timeEntry.Time = durationHour
+	timeEntry.Time = strconv.FormatFloat(durationHour, 'f', 2, 64)
 	timeEntry.Comment = activity.Comment
 
 	editorPath := viper.Get("editor")
 	if editorPath != nil && timeEntry.Comment == "" {
 		fileName := fmt.Sprintf("%d-comment", timeEntry.IssueID)
 
-		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueID, timeEntry.Date, timeEntry.Time, timeEntry.ActivityID)
+		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %s\n# Activity ID: %d", timeEntry.IssueID, timeEntry.Date, timeEntry.Time, timeEntry.ActivityID)
 
 		timeEntry.Comment, err = editor.Open(editorPath.(string), fileName, helperText, true)
 
@@ -151,7 +152,7 @@ func pushRun(cmd *cobra.Command, args []string) {
 			log.Fatal(err)
 		}
 
-		log.Printf("Added %.2f hour(s) to the Issue #%d.", timeEntry.Time, timeEntry.IssueID)
+		log.Printf("Added %s hour(s) to the Issue #%d.", timeEntry.Time, timeEntry.IssueID)
 	}
 }
 

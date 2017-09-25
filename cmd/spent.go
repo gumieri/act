@@ -33,11 +33,11 @@ import (
 
 // TimeEntryStruct is expected format of the Redmine API
 type TimeEntryStruct struct {
-	IssueID    int     `json:"issue_id"`
-	Date       string  `json:"spent_on"`
-	Time       float64 `json:"hours"`
-	ActivityID int     `json:"activity_id"`
-	Comment    string  `json:"comments"`
+	IssueID    int    `json:"issue_id"`
+	Date       string `json:"spent_on"`
+	Time       string `json:"hours"`
+	ActivityID int    `json:"activity_id"`
+	Comment    string `json:"comments"`
 }
 
 // PayloadStruct is the envelope to the time_entry expected by the Redmine API
@@ -145,11 +145,7 @@ func spentRun(cmd *cobra.Command, args []string) {
 	timeEntry.IssueID = getIssueID()
 
 	// Setting the time informed (the first arg)
-	timeEntry.Time, err = strconv.ParseFloat(args[0], 64)
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	timeEntry.Time = args[0]
 
 	timeEntry.Date, err = parseDate(timeEntry.Date)
 
@@ -227,7 +223,7 @@ func spentRun(cmd *cobra.Command, args []string) {
 		log.Fatal(response.Status, "\n", string(bodyBytes))
 	}
 
-	log.Printf("Added %.2f hour(s) to the Issue #%d.", timeEntry.Time, timeEntry.IssueID)
+	log.Printf("Added %s hour(s) to the Issue #%d.", timeEntry.Time, timeEntry.IssueID)
 }
 
 // spentCmd represents the spent command
