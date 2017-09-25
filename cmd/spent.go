@@ -157,7 +157,7 @@ func spentRun(cmd *cobra.Command, args []string) {
 	if editorPath != nil && timeEntry.Comment == "" {
 		fileName := fmt.Sprintf("%d-comment", timeEntry.IssueID)
 
-		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %.2f\n# Activity ID: %d", timeEntry.IssueID, timeEntry.Date, timeEntry.Time, timeEntry.ActivityID)
+		helperText := fmt.Sprintf("\n\n# Issue #%d\n# Date: %s\n# Time elapsed: %s\n# Activity ID: %d", timeEntry.IssueID, timeEntry.Date, timeEntry.Time, timeEntry.ActivityID)
 
 		timeEntry.Comment, err = editor.Open(editorPath.(string), fileName, helperText, true)
 		if err != nil {
