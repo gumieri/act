@@ -37,7 +37,7 @@ editor: vim
 
 ### `spent`
 ```bash
-act spent 5.67 -i 12345 --activity_id=1 -d 2017-09-15 -m 'Making the world a better place for humans'
+act spent 5.67 -i 12345 -a dev -d 2017-09-15 -m 'Making the world a better place for humans'
 ```
 Parameters/Arguments:
 1. time -- ex: 1.5 (for 1 hour 30 minutes)
