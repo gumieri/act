@@ -44,6 +44,20 @@ func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
 	timeEntry.Time = strconv.FormatFloat(durationHour, 'f', 2, 64)
 	timeEntry.Comment = activity.Comment
 
+	if timeEntry.ActivityID == 0 {
+		timeEntry.ActivityID = viper.GetInt("default.activity_id")
+	}
+
+	if timeEntry.ActivityID == 0 {
+		err = errors.New("activity_id is missing")
+		return
+	}
+
+	if strings.Trim(timeEntry.Comment, "\n ") == "" {
+		err = errors.New("You must inform a comment/description to the activity")
+		return
+	}
+
 	editorPath := viper.Get("editor")
 	if editorPath != nil && timeEntry.Comment == "" {
 		fileName := fmt.Sprintf("%d-comment", timeEntry.IssueID)
@@ -55,22 +69,6 @@ func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
 		if err != nil {
 			return
 		}
-	}
-
-	if timeEntry.ActivityID == 0 {
-		timeEntry.ActivityID = viper.GetInt("default.activity_id")
-	}
-
-	// Validating ActivityID
-	if timeEntry.ActivityID == 0 {
-		err = errors.New("activity_id is missing")
-		return
-	}
-
-	// Validating ActivityID
-	if strings.Trim(timeEntry.Comment, "\n ") == "" {
-		err = errors.New("You must inform a comment/description to the activity")
-		return
 	}
 
 	// Sending the data to the Redmine
