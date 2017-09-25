@@ -2,6 +2,10 @@
 
 A tool for timekeeping and tracking. For now only for Redmine.
 
+## Code status
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/gumieri/act)](https://goreportcard.com/report/github.com/gumieri/act) [![Build Status](https://travis-ci.org/gumieri/huexe.svg?branch=master)](https://travis-ci.org/gumieri/huexe)
+
 ## Configuration file
 
 The configuration file need to be named `.act.yaml` and placed on the user's home directory.
@@ -95,3 +99,7 @@ Parameters/Arguments:
 Options/Flags:
 * -i --issue_id -- If not informed it will try retrieve it from the git branch name using the regex config
 * -t --template -- The name of a template file to be loaded to be edited. These template files need to be stored in `templates` inside `.act` in the home directory (`~/.act/templates/text_file`)
+
+## License
+
+Act is released under the [MIT License](http://www.opensource.org/licenses/MIT).
