@@ -17,6 +17,7 @@ package cmd
 import (
 	"encoding/gob"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -64,6 +65,8 @@ func Load(path string, object interface{}) (err error) {
 	return
 }
 
+var activityToStart ActivityStruct
+
 func startRun(cmd *cobra.Command, args []string) {
 	var activities []ActivityStruct
 	var loadPath string
@@ -91,20 +94,30 @@ func startRun(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	issueID = getIssueID()
+	if activityAlias != "" {
+		activityToStart.ActivityID = viper.GetInt(fmt.Sprintf("activities.%s", activityAlias))
+	}
 
-	activity := new(ActivityStruct)
-	activity.IssueID = issueID
-	activity.StartedAt = time.Now()
+	if activityToStart.ActivityID == 0 {
+		activityToStart.ActivityID = viper.GetInt("default.activity_id")
+	}
 
-	activities = append(activities, *activity)
+	// Validating ActivityID
+	if activityToStart.ActivityID == 0 {
+		log.Fatal(errors.New("activity_id is missing"))
+	}
+
+	activityToStart.IssueID = getIssueID()
+	activityToStart.StartedAt = time.Now()
+
+	activities = append(activities, activityToStart)
 	err = Save(activitiesPath, activities)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Printf("Activity %d started.\n", issueID)
+	log.Printf("Activity %d started.\n", activityToStart.IssueID)
 }
 
 // startCmd represents the start command
@@ -117,4 +130,7 @@ var startCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(startCmd)
+
+	startCmd.Flags().IntVar(&activityToStart.ActivityID, "activity_id", 0, "The activity ID.")
+	startCmd.Flags().StringVarP(&activityAlias, "activity", "a", "", "The activity alias (alternative to activity_id).")
 }
