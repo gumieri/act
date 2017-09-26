@@ -62,6 +62,8 @@ type RedmineActivityStruct struct {
 	Name string `json:"name"`
 }
 
+var logAll bool
+
 func logRun(cmd *cobra.Command, args []string) {
 	issueID = getIssueID()
 
@@ -94,7 +96,21 @@ func logRun(cmd *cobra.Command, args []string) {
 	w := new(tabwriter.Writer)
 	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
 
-	fmt.Fprintln(w, "Date\tTime\tUser Name\tAct. ID\tActivity Name\tComment")
+	fmt.Fprint(w, "Date")
+	fmt.Fprint(w, "\t")
+	fmt.Fprint(w, "Time")
+	fmt.Fprint(w, "\t")
+	fmt.Fprint(w, "User Name")
+	fmt.Fprint(w, "\t")
+	if logAll {
+		fmt.Fprint(w, "Activity ID")
+		fmt.Fprint(w, "\t")
+	}
+	fmt.Fprint(w, "Activity Name")
+	fmt.Fprint(w, "\t")
+	fmt.Fprint(w, "Comment")
+	fmt.Fprintln(w)
+
 	for _, timeEntry := range payload.TimeEntries {
 		fmt.Fprintf(w, "%s", timeEntry.Date)
 		fmt.Fprint(w, "\t")
@@ -102,15 +118,17 @@ func logRun(cmd *cobra.Command, args []string) {
 		fmt.Fprint(w, "\t")
 		fmt.Fprintf(w, "%s", timeEntry.User.Name)
 		fmt.Fprint(w, "\t")
-		fmt.Fprintf(w, "%d", timeEntry.Activity.ID)
-		fmt.Fprint(w, "\t")
+		if logAll {
+			fmt.Fprintf(w, "%d", timeEntry.Activity.ID)
+			fmt.Fprint(w, "\t")
+		}
 		fmt.Fprintf(w, "%s", timeEntry.Activity.Name)
 		fmt.Fprint(w, "\t")
 		fmt.Fprintf(w, "%q", timeEntry.Comment)
 		fmt.Fprintln(w)
 	}
-	w.Flush()
 
+	w.Flush()
 }
 
 // logCmd represents the log command
@@ -123,4 +141,6 @@ var logCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(logCmd)
+
+	logCmd.Flags().BoolVarP(&logAll, "all", "a", false, "To list complete information.")
 }
