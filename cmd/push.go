@@ -53,11 +53,6 @@ func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
 		return
 	}
 
-	if strings.Trim(timeEntry.Comment, "\n ") == "" {
-		err = errors.New("You must inform a comment/description to the activity")
-		return
-	}
-
 	editorPath := viper.Get("editor")
 	if editorPath != nil && timeEntry.Comment == "" {
 		fileName := fmt.Sprintf("%d-comment", timeEntry.IssueID)
@@ -69,6 +64,11 @@ func commit(activity ActivityStruct) (timeEntry TimeEntryStruct, err error) {
 		if err != nil {
 			return
 		}
+	}
+
+	if strings.Trim(timeEntry.Comment, "\n ") == "" {
+		err = errors.New("You must inform a comment/description to the activity")
+		return
 	}
 
 	// Sending the data to the Redmine
