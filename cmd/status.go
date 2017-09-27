@@ -62,6 +62,7 @@ func statusRun(cmd *cobra.Command, args []string) {
 	w := new(tabwriter.Writer)
 	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
 
+	fmt.Fprint(w, "\t")
 	fmt.Fprint(w, "Issue")
 	fmt.Fprint(w, "\t")
 	fmt.Fprint(w, "Started At")
@@ -77,9 +78,12 @@ func statusRun(cmd *cobra.Command, args []string) {
 	fmt.Fprint(w, "Comment")
 	fmt.Fprintln(w)
 
-	for _, activity := range activities {
+	for i, activity := range activities {
 
 		running := activity.StoppedAt == (time.Time{})
+
+		fmt.Fprintf(w, "{%d}", i)
+		fmt.Fprint(w, "\t")
 
 		fmt.Fprintf(w, "#%d", activity.IssueID)
 		fmt.Fprint(w, "\t")
