@@ -33,7 +33,45 @@ git:
 editor: vim
 ```
 
-## Usage
+## How to track an activity
+
+The commands to manage the tracking are `start`, `stop`, `status`, `push` and `rm`.
+A very simple workflow example:
+
+```bash
+act start
+```
+```
+2017/10/19 20:17:01 Activity 1234 started.
+```
+```bash
+act status
+```
+```
+        Issue   Started At      Stopped At      Spent           Comment
+{0}     #1234   8:17PM          -               5m40.367443079s ""
+```
+```bash
+act stop
+```
+```
+2017/10/19 20:22:47 Activity 1234 stopped. Time elapsed 0.10 (5m45.347366369s)
+```
+```bash
+act status
+```
+```
+        Issue   Started At      Stopped At      Spent           Comment
+{0}     #1234   8:17PM          8:22PM          5m45.347366369s ""
+```
+```bash
+act push
+```
+```
+Added 0.10 hour(s) to the Issue #1234.
+```
+
+## Commands
 
 ### `spent`
 ```bash
@@ -89,6 +127,19 @@ act stop
 ```bash
 act push
 ```
+
+### `status`
+```bash
+act status
+```
+
+### `rm`
+```bash
+act rm 0
+```
+
+Parameters/Arguments:
+1. activity index on `status` list (without the curly brackets).
 
 ### `note`
 ```bash
